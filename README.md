@@ -5,6 +5,7 @@ Review notes for the PhD Written Qualifying Exam (WQE) in Computer Science at Kh
 | Subject | Notes | Textbook |
 |---|---|---|
 | Software Engineering | [SE_WQE_notes.html](Software-Engineering/SE_WQE_notes.html) | Sommerville, *Software Engineering*, 10th ed. |
+| Artificial Intelligence | [AI_WQE_notes.html](Artificial-Intelligence/AI_WQE_notes.html) | Russell & Norvig, *Artificial Intelligence: A Modern Approach*, 4th ed.; Lindholm et al., *Machine Learning: A First Course for Engineers and Scientists* |
 
 Open the HTML file of a subject in a browser, or download the repository and open it locally. The notes work offline: the formula and code-highlighting libraries are in `notes/assets/` and the figures in `notes/img/`.
 
