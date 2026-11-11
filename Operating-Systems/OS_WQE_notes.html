@@ -210,6 +210,8 @@ p.goal { background: var(--note-bg); border-radius: 8px; padding: 8px 14px; marg
 p.goal > strong:first-child { color: var(--accent); margin-right: 2px; }
 p.keyline { border-left: 4px solid var(--accent); padding: 3px 0 3px 14px; margin: 16px 0; }
 p.keyline strong { color: var(--accent); }
+.core-hide { display: none !important; }
+#coreonly.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 details.fold { background: transparent; border-style: dashed; padding: 0 14px; }
 details.fold > summary { font-size: 15px; padding: 10px 0; }
 details.fold > summary .zh { display: inline; margin-left: 10px; font-weight: 400; }
@@ -224,6 +226,7 @@ details.fold > summary .zh { display: inline; margin-left: 10px; font-weight: 40
     <button class="tool" id="zhtoggle" type="button">隐藏中文</button>
     <button class="tool" id="answers" type="button">展开全部答案</button>
     <button class="tool" id="totop" type="button">回到顶部</button>
+    <button class="tool" id="coreonly" type="button" hidden>只看 ★★★ 必考</button>
   </div>
   <ol class="toc">
 <li><a href="#c00"><span class="chnum">Guide</span>How to Use These Notes</a>
@@ -261,7 +264,7 @@ details.fold > summary .zh { display: inline; margin-left: 10px; font-weight: 40
   <div class="kicker">Khalifa University · PhD Written Qualifying Exam · Operating Systems</div>
   <h1>操作系统 复习笔记</h1>
   <p>考试规则：Closed book and closed notes. A basic scientific calculator is allowed.</p>
-  <p>这是<strong>复习版</strong>：只留会考的内容。每章开头的 Exam map 列出这一章能考什么、对应的公式或结论；每一节是一个考点，标题后面的 <span class="prio p3">★★★</span> 是必考、<span class="prio p2">★★</span> 是常考、<span class="prio p1">★</span> 是认识即可。每节的顺序是：目标 → 需要的基础知识 → 分步讲解 → 例题 → 易错点 → 练习。章末是 Exam-style questions 和折叠起来的教材习题（题目和答案都在）。</p><p>正文用英文（考试用英文作答），每段英文下方是中文翻译；左侧「隐藏中文」可以切换成纯英文自测。点任意原图可以放大。</p>
+  <p>这是<strong>复习版</strong>：只留会考的内容。每章开头的 Exam map 列出这一章能考什么、对应的公式或结论；每一节是一个考点，标题后面的 <span class="prio p3">★★★</span> 是必考、<span class="prio p2">★★</span> 是常考、<span class="prio p1">★</span> 是认识即可。时间紧时点左侧「只看 ★★★ 必考」，页面只留必考小节。每节的顺序是：目标 → 需要的基础知识 → 分步讲解 → 例题 → 易错点 → 练习。章末是 Exam-style questions 和折叠起来的教材习题（题目和答案都在）。</p><p>正文用英文（考试用英文作答），每段英文下方是中文翻译；左侧「隐藏中文」可以切换成纯英文自测。点任意原图可以放大。</p>
   <div class="legend">
     <span class="formula">Formula 公式</span><span class="basics">Basics 基础知识</span><span class="cn">中文解释</span><span class="exam">Traps 易错点</span><span class="example">Worked example 例题</span><span class="zh-sample">中文翻译</span>
   </div>
@@ -14732,6 +14735,30 @@ answers.addEventListener("click", () => {
   all.forEach(d => { d.open = open; });
   answers.textContent = open ? "收起全部答案" : "展开全部答案";
 });
+
+// 复习版：一键只看 ★★★ 小节（不记忆，刷新后恢复显示全部）
+const coreBtn = document.getElementById("coreonly");
+if (document.querySelector("section.chapter > h2 .prio")) {
+  coreBtn.hidden = false;
+  let coreOnly = false;
+  coreBtn.addEventListener("click", () => {
+    coreOnly = !coreOnly;
+    document.querySelectorAll("section.chapter").forEach(sec => {
+      let hide = false;
+      [...sec.children].forEach(el => {
+        if (el.tagName === "H2") {
+          const p = el.querySelector(".prio");
+          hide = coreOnly && !!p && !p.classList.contains("p3");
+          const nav = document.querySelector('.toc a[href="#' + el.id + '"]');
+          if (nav) nav.parentElement.classList.toggle("core-hide", hide);
+        }
+        if (el.tagName !== "H1") el.classList.toggle("core-hide", hide);
+      });
+    });
+    coreBtn.textContent = coreOnly ? "显示全部小节" : "只看 ★★★ 必考";
+    coreBtn.classList.toggle("on", coreOnly);
+  });
+}
 
 const links = new Map([...document.querySelectorAll(".toc a")].map(a => [a.getAttribute("href").slice(1), a]));
 const marks = [...document.querySelectorAll("section.chapter, h2[id]")].filter(el => links.has(el.id));
